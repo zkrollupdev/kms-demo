@@ -13,21 +13,23 @@ import (
 
 func main() {
 
-	generateCMK()
-	generate_data_key()
-	encrypt_data()
+	// generateCMK()
+	// generate_data_key()
+	// encrypt_data()
 	dencrypt_data()
 
-	//base64 encode example
+	// base64 encode example
 	input := "fc373de160b2028ff48d7df7eb16b8a4fcf1761ce4734ae42fd21e8f34f9b97f"
 	encodeString := base64.StdEncoding.EncodeToString([]byte(input))
 	fmt.Println(encodeString)
 
-	//base64 decode example
-	decodeString, err := base64.StdEncoding.DecodeString(encodeString)
+	//dencrypt and base64 decode example
+	test := dencrypt_data()
+	decodeString, err := base64.StdEncoding.DecodeString(test)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	fmt.Print("plain data is:")
 	fmt.Println(string(decodeString))
 
 }
@@ -109,7 +111,7 @@ func encrypt_data() {
 
 // {"Response":{"CiphertextBlob":"BYCUP6xePY1vS9u2xF2LoRGV4P7r7G5BwQ3rfaPvZaTZ7yU7IsgU8152hH8iPj8mn57MtKQrcX6fTNN9B11qPg==-k-fKVP3WIlGpg8m9LMW4jEkQ==-k-XihyJVRuO21xU9lJIBPxYQpX8XYeBQhXe2Dj2ewotFPcr+E1","KeyId":"1fd7f96c-ea37-11ed-b68d-32c48ca45083","RequestId":"b6be5337-408e-46bc-8705-dc4443a4225f"}}
 
-func dencrypt_data() {
+func dencrypt_data() string {
 	credential := common.NewCredential(
 		"IKIDqeKlxR8brszxFNSM9l9G7h15xc1C9uRk",
 		"82jKisoY3RfoKp9JGxd5HExRf2Pckrre",
@@ -120,18 +122,17 @@ func dencrypt_data() {
 
 	request := kms.NewDecryptRequest()
 
-	//ciphertext,replace it
 	request.CiphertextBlob = common.StringPtr("BYCUP6xePY1vS9u2xF2LoRGV4P7r7G5BwQ3rfaPvZaTZ7yU7IsgU8152hH8iPj8mn57MtKQrcX6fTNN9B11qPg==-k-fKVP3WIlGpg8m9LMW4jEkQ==-k-GkK58mChGcT4Re4N6NVDnh+VSlX7/9K396K27ZgaoUhF7VbO25xhA0h6VaoGSqseJeSzBX/yTapgpx40B9yzLG0vADlm+PCUnNbV6737NvmB16OefVxs9p/RB74F1NUL+60UPA==")
 
 	response, err := client.Decrypt(request)
 	if _, ok := err.(*errors.TencentCloudSDKError); ok {
 		fmt.Printf("An API error has returned: %s", err)
-		return
+		return ""
 	}
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("dencrypt_data:%s\n", response.ToJsonString())
+	return *(response.Response.Plaintext)
 }
 
 // {"Response":{"KeyId":"1fd7f96c-ea37-11ed-b68d-32c48ca45083","Plaintext":"MTIzNDU2Nzc4OQo=","RequestId":"5f1858b0-6fb0-49fa-8aac-a6368ed9a22c"}}
