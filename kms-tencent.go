@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
+	"log"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
@@ -15,6 +17,18 @@ func main() {
 	generate_data_key()
 	encrypt_data()
 	dencrypt_data()
+
+	//base64 encode example
+	input := "fc373de160b2028ff48d7df7eb16b8a4fcf1761ce4734ae42fd21e8f34f9b97f"
+	encodeString := base64.StdEncoding.EncodeToString([]byte(input))
+	fmt.Println(encodeString)
+
+	//base64 decode example
+	decodeString, err := base64.StdEncoding.DecodeString(encodeString)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(string(decodeString))
 
 }
 
